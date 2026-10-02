@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Money Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Money Tracker</h1>
+    <div class="auth">
+      <span id="saveState" class="state"></span>
+      <button id="signInBtn" class="btn primary">Sign in with Google</button>
+      <button id="signOutBtn" class="btn" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <p id="banner" class="banner" hidden></p>
+
+  <section id="welcome" class="welcome">
+    <p>Sign in with Google to load your data. It is saved as a single file, <b>money-tracker.json</b>, in your own Google Drive.</p>
+  </section>
+
+  <main id="app" hidden>
+    <div class="monthbar">
+      <button id="prev" class="btn" aria-label="Previous month">&lsaquo;</button>
+      <input type="month" id="month" aria-label="Month">
+      <button id="next" class="btn" aria-label="Next month">&rsaquo;</button>
+    </div>
+
+    <div class="summary">
+      <div><span>Income</span><b id="sumInc" class="inc">0</b></div>
+      <div><span>Expenses</span><b id="sumExp" class="exp">0</b></div>
+      <div><span>Balance</span><b id="sumBal">0</b></div>
+    </div>
+
+    <form id="form" class="entry">
+      <div class="seg" role="group" aria-label="Entry type">
+        <button type="button" data-type="expense" class="on">Expense</button>
+        <button type="button" data-type="income">Income</button>
+      </div>
+      <label>Date <input type="date" id="date" required></label>
+      <label>Category <select id="category" required></select></label>
+      <label>Amount (₹) <input type="number" id="amount" min="0.01" step="0.01" inputmode="decimal" required></label>
+      <label>Payment type <select id="payment" required></select></label>
+      <label>Account <select id="account" required></select></label>
+      <label class="wide">Note (optional) <input type="text" id="note" maxlength="120"></label>
+      <button type="submit" class="btn primary wide">Add entry</button>
+    </form>
+
+    <h2>Entries</h2>
+    <ul id="list" class="list"></ul>
+  </main>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="app.js"></script>
+</body>
+</html>

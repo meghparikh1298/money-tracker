@@ -1,0 +1,21 @@
+# Environment files & Secrets
+.env
+.env.local
+*.pem
+Extra/imp.txt
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.exe
+*.o
+
+# OS & Editor generated files
+.DS_Store
+.vscode/
+.idea/
+*.log

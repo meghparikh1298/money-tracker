@@ -40,6 +40,10 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .right{display:flex;align-items:center;gap:10px}
 .state{font-size:.78rem;color:var(--mute)}
 .btn,input,select{font:inherit;color:var(--ink);background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:10px;padding:9px 14px;min-width:0}
+select{background-color:#1a1738}
+select option{background-color:#1a1738;color:#eef0ff}
+.payh{margin:6px 0 10px;font-size:1rem}
+.paywrap{padding-bottom:40px;max-width:380px}
 .btn{cursor:pointer}
 .btn:hover{border-color:var(--accent)}
 .btn.primary{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
@@ -73,7 +77,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
 .empty{color:var(--mute);text-align:center;padding:28px 0;cursor:default!important;border-style:dashed!important}
 
 /* settings */
-.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:40px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding-bottom:10px}
 .cols h3{margin:0 0 10px;font-size:1rem}
 .cat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px}
 .cat .head{display:flex;justify-content:space-between;align-items:center;font-weight:600}

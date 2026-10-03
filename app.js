@@ -27,6 +27,7 @@ const byNewest = (a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCom
 function normalize(d) {
   if (!d || !Array.isArray(d.entries)) d = { entries: [] };
   d.version = 2;
+  if (!Array.isArray(d.payments) || !d.payments.length) d.payments = CONFIG.payments.slice();
   if (!d.categories) d.categories = JSON.parse(JSON.stringify(CONFIG.defaults));
   d.entries.forEach(e => {
     e.id = e.id || uid();
@@ -215,7 +216,7 @@ function openDlg(entry) {
   $('dlgTitle').textContent = entry ? 'Edit entry' : 'Add entry';
   setType(entry ? entry.type : 'expense', entry && entry.category);
   fillSub(entry && entry.subcategory);
-  fillSelect('payment', CONFIG.payments, entry && entry.payment);
+  fillSelect('payment', data.payments, entry && entry.payment);
   fillSelect('account', CONFIG.accounts, entry && entry.account);
   $('date').value = entry ? entry.date : localDate();
   $('amount').value = entry ? entry.amount : '';
@@ -261,6 +262,24 @@ function renderSettings() {
       if (!Object.keys(cats).some(c => c.toLowerCase() === v.toLowerCase())) cats[v] = [];
     }));
   });
+  renderPayments();
+}
+function renderPayments() {
+  const box = $('payList'); box.innerHTML = '';
+  const card = el('div', 'cat'), chips = el('div', 'chips');
+  data.payments.forEach(p => {
+    const c = el('span', 'chip', p);
+    const x = el('button', 'x', '✕'); x.setAttribute('aria-label', 'Remove ' + p);
+    x.onclick = () => {
+      if (data.payments.length <= 1) { alert('Keep at least one payment type.'); return; }
+      data.payments = data.payments.filter(v => v !== p); persist(); renderSettings();
+    };
+    c.appendChild(x); chips.appendChild(c);
+  });
+  card.append(chips, addForm('New payment type', v => {
+    if (!data.payments.some(s => s.toLowerCase() === v.toLowerCase())) data.payments.push(v);
+  }));
+  box.appendChild(card);
 }
 function addForm(placeholder, onAdd) {
   const f = el('form', 'add');

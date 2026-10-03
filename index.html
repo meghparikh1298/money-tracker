@@ -58,45 +58,19 @@
   </header>
 
   <main id="home">
-    <div class="summary">
-      <div><span>Income (this month)</span><b id="sumInc" class="inc">0</b></div>
-      <div><span>Expenses (this month)</span><b id="sumExp" class="exp">0</b></div>
-      <div><span>Balance</span><b id="sumBal">0</b></div>
-    </div>
+    <div class="summary" id="summary"></div>
     <h2 class="sec">Recent transactions</h2>
     <ul id="list" class="list"></ul>
     <button id="moreBtn" class="btn wideBtn" hidden>Show 20 more</button>
   </main>
 
-  <main id="settings" hidden>
-    <button id="backBtn" class="btn">‹ Back</button>
-    <h2 class="sec">Settings</h2>
-    <p class="muted">Manage your categories and subcategories. Existing entries keep the names they were saved with.</p>
-    <div class="cols">
-      <div><h3 class="inc">Income categories</h3><div id="catIncome"></div></div>
-      <div><h3 class="exp">Expense categories</h3><div id="catExpense"></div></div>
-    </div>
-    <h3 class="payh">Payment types</h3>
-    <div id="payList" class="paywrap"></div>
-  </main>
 </div>
 
 <dialog id="dlg">
   <form id="form">
     <h2 id="dlgTitle">Add entry</h2>
-    <div class="seg" role="group" aria-label="Entry type">
-      <button type="button" data-type="expense" class="on">Expense</button>
-      <button type="button" data-type="income">Income</button>
-    </div>
-    <div class="grid">
-      <label>Date <input type="date" id="date" required></label>
-      <label>Amount (₹) <input type="number" id="amount" min="0.01" step="0.01" inputmode="decimal" required></label>
-      <label>Category <select id="category" required></select></label>
-      <label>Subcategory <select id="subcategory"></select></label>
-      <label>Payment type <select id="payment" required></select></label>
-      <label>Account <select id="account" required></select></label>
-      <label class="wide">Note (optional) <input type="text" id="note" maxlength="120"></label>
-    </div>
+    <div class="seg" id="typeSeg" role="group" aria-label="Entry type"></div>
+    <div class="grid" id="fields"></div>
     <div class="actions">
       <button type="button" id="delBtn" class="btn danger" hidden>Delete</button>
       <span class="grow"></span>
@@ -107,6 +81,8 @@
 </dialog>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
-<script src="app.js"></script>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="home.js"></script>
 </body>
 </html>

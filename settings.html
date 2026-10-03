@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Settings · Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <p id="banner" class="banner" hidden></p>
+  <header class="top">
+    <a class="btn" href="index.html">‹ Back</a>
+    <h1 class="ptitle">Settings</h1>
+    <span id="saveState" class="state"></span>
+  </header>
+  <main>
+    <p class="muted">Tap a row to open it. Existing entries keep the names they were saved with.</p>
+    <div id="sections"></div>
+  </main>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>

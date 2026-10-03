@@ -1,4 +1,4 @@
-let openId = null, focusKey = null;
+let openId = CONFIG.sections[0].id, focusKey = null;
 
 function addForm(key, placeholder, onAdd) {
   const f = el('form', 'add');
@@ -21,7 +21,7 @@ function chip(text, label, onRemove) {
 }
 
 function renderCategories(panel, s) {
-  const cats = data.categories[s.type];
+  const cats = data.categories[s.type], grid = el('div', 'cardgrid');
   Object.keys(cats).forEach(name => {
     const card = el('div', 'ccard'), head = el('div', 'head', name);
     const del = el('button', 'x', '🗑'); del.type = 'button'; del.title = 'Delete category'; del.setAttribute('aria-label', 'Delete ' + name);
@@ -30,9 +30,9 @@ function renderCategories(panel, s) {
     const chips = el('div', 'chips');
     cats[name].forEach(sub => chips.appendChild(chip(sub, sub, () => { cats[name] = cats[name].filter(v => v !== sub); persist(); renderSettings(); })));
     card.append(head, chips, addForm(s.id + ':' + name, 'Add subcategory', v => { if (!has(cats[name], v)) cats[name].push(v); }));
-    panel.appendChild(card);
+    grid.appendChild(card);
   });
-  panel.appendChild(addForm(s.id + ':new', 'New ' + typeOf(s.type).label.toLowerCase() + ' category', v => { if (!has(Object.keys(cats), v)) cats[v] = []; }));
+  panel.append(grid, addForm(s.id + ':new', 'New ' + typeOf(s.type).label.toLowerCase() + ' category', v => { if (!has(Object.keys(cats), v)) cats[v] = []; }));
 }
 
 function renderList(panel, s) {
@@ -46,21 +46,20 @@ function renderList(panel, s) {
 }
 
 function renderSettings() {
-  const root = $('sections'); root.innerHTML = '';
+  const nav = $('nav'), detail = $('detail');
+  nav.innerHTML = ''; detail.innerHTML = '';
   CONFIG.sections.forEach(s => {
-    const isOpen = openId === s.id;
+    const active = openId === s.id;
     const count = s.kind === 'categories' ? Object.keys(data.categories[s.type]).length : data[s.list].length;
-    const box = el('section', 'acc' + (isOpen ? ' open' : ''));
-    const head = el('button', 'acc-head'); head.type = 'button'; head.setAttribute('aria-expanded', isOpen);
-    head.append(el('span', 't', s.title), el('span', 'count', count), el('span', 'chev', '›'));
-    head.onclick = () => { openId = isOpen ? null : s.id; renderSettings(); };
-    box.appendChild(head);
-    if (isOpen) {
-      const body = el('div', 'acc-body');
-      (s.kind === 'categories' ? renderCategories : renderList)(body, s);
-      box.appendChild(body);
+    const b = el('button', 'nav-item' + (active ? ' active' : '')); b.type = 'button';
+    b.setAttribute('aria-current', active);
+    b.append(el('span', 't', s.title), el('span', 'count', count));
+    b.onclick = () => { openId = s.id; renderSettings(); };
+    nav.appendChild(b);
+    if (active) {
+      detail.appendChild(el('h2', '', s.title));
+      (s.kind === 'categories' ? renderCategories : renderList)(detail, s);
     }
-    root.appendChild(box);
   });
   if (focusKey) {
     const i = [...document.querySelectorAll('input[data-k]')].find(x => x.dataset.k === focusKey);

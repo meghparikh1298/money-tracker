@@ -6,21 +6,25 @@
   <title>Settings · Expense Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="settings-page">
+<body>
   <p id="banner" class="banner" hidden></p>
-  <header class="top">
-    <a class="btn" href="index.html">‹ Back</a>
-    <h1 class="ptitle">Settings</h1>
-    <span id="saveState" class="state"></span>
-  </header>
-  <main>
-    <p class="muted">Pick an item on the left to manage it. Existing entries keep the names they were saved with.</p>
-    <div class="split">
-      <nav id="nav" class="navlist" aria-label="Settings sections"></nav>
-      <section id="detail" class="detail"></section>
+  <div class="shell">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="content">
+      <header class="top">
+        <button id="menuBtn" class="btn menu-btn" aria-label="Open menu">☰</button>
+        <h1 class="ptitle left">Settings</h1>
+        <span id="saveState" class="state"></span>
+      </header>
+      <main>
+        <p class="muted">Pick an item on the left to manage it. Existing entries keep the names they were saved with.</p>
+        <div class="split">
+          <nav id="nav" class="navlist" aria-label="Settings sections"></nav>
+          <section id="detail" class="detail"></section>
+        </div>
+      </main>
     </div>
-  </main>
-
+  </div>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="config.js"></script>
   <script src="common.js"></script>

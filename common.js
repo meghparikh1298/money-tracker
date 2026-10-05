@@ -22,6 +22,9 @@ function fillSelect(id, items, selected, blank) {
 function setState(t) { const s = $('saveState'); if (s) s.textContent = t; }
 function banner(msg) { const b = $('banner'); if (b) { b.textContent = msg || ''; b.hidden = !msg; } }
 
+// Drop keys that have no value so the JSON stays tidy
+const clean = e => { Object.keys(e).forEach(k => { if (e[k] === '' || e[k] == null) delete e[k]; }); return e; };
+
 function normalize(d) {
   if (!d || !Array.isArray(d.entries)) d = { entries: [] };
   d.version = 3;
@@ -30,9 +33,9 @@ function normalize(d) {
   CONFIG.lists.forEach(l => { if (!Array.isArray(d[l.key]) || !d[l.key].length) d[l.key] = (CONFIG.defaults[l.key] || []).slice(); });
   d.entries.forEach(e => {
     e.id = e.id || uid();
-    e.subcategory = e.subcategory || '';
     e.createdAt = e.createdAt || e.date + 'T00:00:00.000Z';
     e.updatedAt = e.updatedAt || e.createdAt;
+    clean(e);
   });
   return d;
 }

@@ -32,7 +32,8 @@ function renderHome() {
     const t = typeOf(e.type), li = el('li'); li.title = 'Click to edit';
     const main = el('div', 'main'), cat = el('div', 'cat', e.category);
     if (e.subcategory) cat.appendChild(el('i', '', ' › ' + e.subcategory));
-    const meta = [e.date].concat(CONFIG.lists.map(l => e[l.field]), [e.note]).filter(Boolean).join(' · ');
+    const extras = CONFIG.extraFields.map(x => e[x.field] ? (x.metaLabel ? x.metaLabel + ' ' : '') + e[x.field] : '');
+    const meta = [e.date].concat(CONFIG.lists.map(l => e[l.field]), extras, [e.note]).filter(Boolean).join(' · ');
     main.append(cat, el('div', 'meta', meta));
     li.append(main, el('div', 'amt ' + t.cls, (t.sign > 0 ? '+' : '-') + money(e.amount)));
     li.onclick = () => openDlg(e);
@@ -50,7 +51,7 @@ function buildForm() {
     b.onclick = () => setType(t.id); seg.appendChild(b);
   });
   const g = $('fields'); g.innerHTML = '';
-  const field = (id, label, node, cls) => { node.id = id; const l = el('label', cls || ''); l.append(label, node); g.appendChild(l); };
+  const field = (id, label, node, cls) => { node.id = id; const l = el('label', cls || ''); l.id = 'wrap_' + id; l.append(label, node); g.appendChild(l); };
   const input = (t, req) => { const i = el('input'); i.type = t; i.required = !!req; return i; };
   const select = req => { const s = el('select'); s.required = !!req; return s; };
   field('date', 'Date', input('date', true));
@@ -59,6 +60,13 @@ function buildForm() {
   field('category', 'Category', select(true));
   field('subcategory', 'Subcategory', select(false));
   CONFIG.lists.forEach(l => field(l.field, l.label, select(true)));
+  CONFIG.extraFields.forEach(x => {
+    const i = input(x.input || 'text');
+    if (i.type === 'text') i.maxLength = 80;
+    if (x.placeholder) i.placeholder = x.placeholder;
+    if (x.suggest) { i.setAttribute('list', 'dl_' + x.field); const dl = el('datalist'); dl.id = 'dl_' + x.field; g.appendChild(dl); }
+    field(x.field, x.label, i, x.whenCategory ? 'wide' : '');
+  });
   const note = input('text'); note.maxLength = 120;
   field('note', 'Note (optional)', note, 'wide');
   $('category').onchange = () => fillSub();
@@ -71,6 +79,15 @@ function setType(t, keepCat) {
 }
 function fillSub(selected) {
   fillSelect('subcategory', data.categories[type][$('category').value] || [], selected, '— None —');
+  updateExtras();
+}
+const extraVisible = x => !x.whenCategory || $('category').value.toLowerCase() === x.whenCategory.toLowerCase();
+function updateExtras() {
+  CONFIG.extraFields.forEach(x => { const show = extraVisible(x); $('wrap_' + x.field).hidden = !show; if (!show) $(x.field).value = ''; });
+}
+function fillDatalist(field) {
+  const dl = $('dl_' + field); dl.innerHTML = '';
+  [...new Set(data.entries.map(e => e[field]).filter(Boolean))].sort().forEach(v => { const o = el('option'); o.value = v; dl.appendChild(o); });
 }
 function openDlg(entry) {
   editing = entry || null;
@@ -78,6 +95,7 @@ function openDlg(entry) {
   setType(entry ? entry.type : CONFIG.defaultType, entry && entry.category);
   fillSub(entry && entry.subcategory);
   CONFIG.lists.forEach(l => fillSelect(l.field, data[l.key], entry && entry[l.field]));
+  CONFIG.extraFields.forEach(x => { if (extraVisible(x)) $(x.field).value = (entry && entry[x.field]) || ''; if (x.suggest) fillDatalist(x.field); });
   $('date').value = entry ? entry.date : localDate();
   $('amount').value = entry ? entry.amount : '';
   $('note').value = entry ? entry.note || '' : '';
@@ -90,8 +108,9 @@ function saveEntry(ev) {
   if (!(amount > 0)) return;
   const f = { date: $('date').value, type, category: $('category').value, subcategory: $('subcategory').value, amount, note: $('note').value.trim() };
   CONFIG.lists.forEach(l => { f[l.field] = $(l.field).value; });
-  if (editing) Object.assign(editing, f, { updatedAt: nowIso() });
-  else { const t = nowIso(); data.entries.push({ id: uid(), ...f, createdAt: t, updatedAt: t }); }
+  CONFIG.extraFields.forEach(x => { f[x.field] = extraVisible(x) ? $(x.field).value.trim() : ''; });
+  if (editing) clean(Object.assign(editing, f, { updatedAt: nowIso() }));
+  else { const t = nowIso(); data.entries.push(clean({ id: uid(), ...f, createdAt: t, updatedAt: t })); }
   $('dlg').close(); renderHome(); persist();
 }
 

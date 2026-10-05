@@ -1,4 +1,5 @@
-// All parameters live here. Nothing else in the code hardcodes lists or options.
+
+  // All parameters live here. Nothing else in the code hardcodes lists or options.
 const CONFIG = {
   CLIENT_ID: '1049846042399-rf5rsddh0g6t3es2cv0j2bi1hqe8j7gj.apps.googleusercontent.com',
   FILE_NAME: 'money-tracker.json',
@@ -29,11 +30,19 @@ const CONFIG = {
     { id: 'accounts', title: 'Bank Account',     kind: 'list', list: 'accounts' }
   ],
 
+  // Optional entry fields. Empty values are never written to the JSON.
+  // whenCategory: field only appears when that category is chosen (case-insensitive)
+  // suggest: offer previously used values; metaLabel: prefix shown in the transaction list
+  extraFields: [
+    { field: 'group', label: 'Group (trip, event…)', input: 'text', placeholder: 'e.g. Goa trip, Concert', suggest: true, metaLabel: 'Group:' },
+    { field: 'maturityDate', label: 'Closing / Maturity date', input: 'date', whenCategory: 'Investment', metaLabel: 'Matures' }
+  ],
+
   // Starting values, used only when your Drive file does not have them yet
   defaults: {
     categories: {
       income:  { 'Salary': [], 'Received from friend/family': [], 'Stocks': [], 'Dividends': [], 'Interest': [] },
-      expense: { 'Food': [], 'Groceries': [], 'Entertainment': [], 'Bills': [] }
+      expense: { 'Food': [], 'Groceries': [], 'Entertainment': [], 'Bills': [], 'Investment': [] }
     },
     payments: ['UPI', 'Credit Card', 'Cash'],
     accounts: ['HDFC', 'BoB', 'SBI']

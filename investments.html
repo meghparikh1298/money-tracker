@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Settings · Expense Tracker</title>
+  <title>Investments · Expense Tracker</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,21 +13,20 @@
     <div class="content">
       <header class="top">
         <button id="menuBtn" class="btn menu-btn" aria-label="Open menu">☰</button>
-        <h1 class="ptitle left">Settings</h1>
+        <h1 class="ptitle left">Investments</h1>
         <span id="saveState" class="state"></span>
       </header>
       <main>
-        <p class="muted">Pick an item on the left to manage it. Existing entries keep the names they were saved with.</p>
-        <div class="split">
-          <nav id="nav" class="navlist" aria-label="Settings sections"></nav>
-          <section id="detail" class="detail"></section>
-        </div>
+        <div id="summary" class="summary auto"></div>
+        <section class="panelbox"><h2>By type</h2><div id="byType"></div></section>
+        <h2 class="sec">All investments</h2>
+        <ul id="list" class="list"></ul>
       </main>
     </div>
   </div>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script src="config.js"></script>
   <script src="common.js"></script>
-  <script src="settings.js"></script>
+  <script src="investments.js"></script>
 </body>
 </html>

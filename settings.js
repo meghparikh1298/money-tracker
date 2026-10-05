@@ -39,7 +39,7 @@ function renderList(panel, s) {
   const l = CONFIG.lists.find(x => x.key === s.list), items = data[l.key];
   const chips = el('div', 'chips');
   items.forEach(v => chips.appendChild(chip(v, v, () => {
-    if (items.length <= 1) { alert('Keep at least one ' + l.singular + '.'); return; }
+    if (!l.optional && items.length <= 1) { alert('Keep at least one ' + l.singular + '.'); return; }
     data[l.key] = items.filter(x => x !== v); persist(); renderSettings();
   })));
   panel.append(chips, addForm(s.id + ':new', 'New ' + l.singular, v => { if (!has(items, v)) items.push(v); }));
@@ -67,9 +67,4 @@ function renderSettings() {
   }
 }
 
-function init() {
-  if (!localStorage.getItem(K.signed)) { location.replace('index.html'); return; }
-  loadCache(); renderSettings();
-  connect(false).then(renderSettings).catch(() => location.replace('index.html'));
-}
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => initPage('settings', renderSettings));

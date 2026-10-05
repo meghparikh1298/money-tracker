@@ -40,9 +40,12 @@
 </section>
 
 <!-- APP -->
-<div id="app" hidden>
+<div id="app" class="shell" hidden>
+  <aside id="sidebar" class="sidebar"></aside>
+  <div class="content">
   <header class="top">
-    <div class="brand"><svg width="34" height="34"><use href="#logo"/></svg><b>Expense Tracker</b></div>
+    <button id="menuBtn" class="btn menu-btn" aria-label="Open menu">☰</button>
+    <h1 class="ptitle left">Transactions</h1>
     <div class="right">
       <span id="saveState" class="state"></span>
       <button id="addBtn" class="btn primary">+ Add Entry</button>
@@ -63,7 +66,7 @@
     <ul id="list" class="list"></ul>
     <button id="moreBtn" class="btn wideBtn" hidden>Show 20 more</button>
   </main>
-
+  </div>
 </div>
 
 <dialog id="dlg">

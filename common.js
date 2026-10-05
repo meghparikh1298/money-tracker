@@ -30,7 +30,11 @@ function normalize(d) {
   d.version = 3;
   d.categories = d.categories || {};
   CONFIG.entryTypes.forEach(t => { if (!d.categories[t.id]) d.categories[t.id] = clone(CONFIG.defaults.categories[t.id] || {}); });
-  CONFIG.lists.forEach(l => { if (!Array.isArray(d[l.key]) || !d[l.key].length) d[l.key] = (CONFIG.defaults[l.key] || []).slice(); });
+  CONFIG.lists.forEach(l => {
+    if (!Array.isArray(d[l.key])) d[l.key] = l.optional   // first time: seed optional lists from existing entries
+      ? [...new Set(d.entries.map(e => e[l.field]).filter(Boolean))].sort() : (CONFIG.defaults[l.key] || []).slice();
+    else if (!d[l.key].length && !l.optional) d[l.key] = (CONFIG.defaults[l.key] || []).slice();
+  });
   d.entries.forEach(e => {
     e.id = e.id || uid();
     e.createdAt = e.createdAt || e.date + 'T00:00:00.000Z';
@@ -157,4 +161,36 @@ function signOut() {
   if (accessToken && window.google) google.accounts.oauth2.revoke(accessToken, () => {});
   accessToken = null; fileId = null; user = null; data = normalize(null);
   Object.values(K).forEach(k => { localStorage.removeItem(k); sessionStorage.removeItem(k); });
+}
+
+// ---------- Shared page shell: left menu + guard ----------
+function mountNav(activeId) {
+  const sb = $('sidebar'); if (!sb) return;
+  sb.innerHTML = ''; sb.appendChild(el('div', 'sb-brand grad', 'Expense Tracker'));
+  CONFIG.nav.forEach(n => {
+    const a = el('a', 'nav-item' + (n.id === activeId ? ' active' : '')); a.href = n.href;
+    a.append(el('span', 'ico', n.icon), el('span', 't', n.label)); sb.appendChild(a);
+  });
+  const scrim = el('div', 'scrim'); document.body.appendChild(scrim);
+  const toggle = open => { open = open === undefined ? !sb.classList.contains('open') : open; sb.classList.toggle('open', open); document.body.classList.toggle('navopen', open); };
+  scrim.onclick = () => toggle(false);
+  if ($('menuBtn')) $('menuBtn').onclick = () => toggle();
+}
+
+// Pages other than the home page: paint from cache, then sync; go to login if signed out.
+function initPage(activeId, render) {
+  mountNav(activeId);
+  if (!localStorage.getItem(K.signed)) { location.replace('index.html'); return; }
+  loadCache(); render();
+  connect(false).then(render).catch(() => location.replace('index.html'));
+}
+
+// Horizontal bars: items = [{label, value, cls}]
+function hbars(box, items) {
+  const max = Math.max(...items.map(i => i.value), 1);
+  items.forEach(i => {
+    const r = el('div', 'hrow'), t = el('div', 'track ' + (i.cls || '')), f = el('div', 'fill');
+    f.style.width = (i.value / max * 100) + '%'; t.appendChild(f);
+    r.append(el('div', 'hl', i.label), t, el('div', 'hv', money(i.value))); box.appendChild(r);
+  });
 }

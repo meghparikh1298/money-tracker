@@ -33,7 +33,7 @@ function renderHome() {
     const main = el('div', 'main'), cat = el('div', 'cat', e.category);
     if (e.subcategory) cat.appendChild(el('i', '', ' › ' + e.subcategory));
     const extras = CONFIG.extraFields.map(x => e[x.field] ? (x.metaLabel ? x.metaLabel + ' ' : '') + e[x.field] : '');
-    const meta = [e.date].concat(CONFIG.lists.map(l => e[l.field]), extras, [e.note]).filter(Boolean).join(' · ');
+    const meta = [e.date].concat(CONFIG.lists.map(l => e[l.field] ? (l.metaLabel ? l.metaLabel + ' ' : '') + e[l.field] : ''), extras, [e.note]).filter(Boolean).join(' · ');
     main.append(cat, el('div', 'meta', meta));
     li.append(main, el('div', 'amt ' + t.cls, (t.sign > 0 ? '+' : '-') + money(e.amount)));
     li.onclick = () => openDlg(e);
@@ -59,7 +59,7 @@ function buildForm() {
   field('amount', `Amount (${CONFIG.currency.symbol})`, amt);
   field('category', 'Category', select(true));
   field('subcategory', 'Subcategory', select(false));
-  CONFIG.lists.forEach(l => field(l.field, l.label, select(true)));
+  CONFIG.lists.forEach(l => { const s = select(!l.optional); field(l.field, l.label, s); if (l.allowAdd) s.onchange = () => addInline(l); });
   CONFIG.extraFields.forEach(x => {
     const i = input(x.input || 'text');
     if (i.type === 'text') i.maxLength = 80;
@@ -70,6 +70,20 @@ function buildForm() {
   const note = input('text'); note.maxLength = 120;
   field('note', 'Note (optional)', note, 'wide');
   $('category').onchange = () => fillSub();
+}
+function fillList(l, selected) {
+  fillSelect(l.field, data[l.key], selected, l.optional ? '— None —' : undefined);
+  const s = $(l.field); s.dataset.prev = s.value;
+  if (l.allowAdd) { const o = el('option', '', '＋ Add new…'); o.value = '__new__'; s.appendChild(o); }
+}
+function addInline(l) {   // “＋ Add new…” chosen in a dropdown
+  const s = $(l.field);
+  if (s.value !== '__new__') { s.dataset.prev = s.value; return; }
+  const name = (prompt('New ' + l.singular + ' name') || '').trim();
+  if (!name) { fillList(l, s.dataset.prev); return; }
+  const same = data[l.key].find(v => v.toLowerCase() === name.toLowerCase());
+  if (!same) { data[l.key].push(name); persist(); }
+  fillList(l, same || name);
 }
 function setType(t, keepCat) {
   type = t;
@@ -94,7 +108,7 @@ function openDlg(entry) {
   $('dlgTitle').textContent = entry ? 'Edit entry' : 'Add entry';
   setType(entry ? entry.type : CONFIG.defaultType, entry && entry.category);
   fillSub(entry && entry.subcategory);
-  CONFIG.lists.forEach(l => fillSelect(l.field, data[l.key], entry && entry[l.field]));
+  CONFIG.lists.forEach(l => fillList(l, entry && entry[l.field]));
   CONFIG.extraFields.forEach(x => { if (extraVisible(x)) $(x.field).value = (entry && entry[x.field]) || ''; if (x.suggest) fillDatalist(x.field); });
   $('date').value = entry ? entry.date : localDate();
   $('amount').value = entry ? entry.amount : '';
@@ -127,7 +141,7 @@ async function go(interactive) {
 }
 
 function init() {
-  buildForm(); onProfile = renderUser;
+  mountNav('transactions'); buildForm(); onProfile = renderUser;
   $('signInBtn').onclick = () => go(true);
   $('signOutBtn').onclick = () => { signOut(); $('menu').hidden = true; showLogin(); };
   $('addBtn').onclick = () => openDlg(null);

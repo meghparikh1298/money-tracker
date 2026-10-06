@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Search · Expense Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <p id="banner" class="banner" hidden></p>
+  <div class="shell">
+    <aside id="sidebar" class="sidebar"></aside>
+    <div class="content">
+      <header class="top">
+        <button id="menuBtn" class="btn menu-btn" aria-label="Open menu">☰</button>
+        <h1 class="ptitle left">Search</h1>
+        <span id="saveState" class="state"></span>
+      </header>
+      <main>
+        <section class="panelbox">
+          <div id="filters"></div>
+          <div class="actions"><span class="grow muted" id="count"></span><button id="clearBtn" class="btn">Clear filters</button></div>
+        </section>
+        <div id="summary" class="summary auto"></div>
+        <ul id="list" class="list"></ul>
+        <button id="moreBtn" class="btn wideBtn" hidden>Show more</button>
+      </main>
+    </div>
+  </div>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="config.js"></script>
+  <script src="common.js"></script>
+  <script src="entryform.js"></script>
+  <script src="filters.js"></script>
+  <script src="search.js"></script>
+</body>
+</html>

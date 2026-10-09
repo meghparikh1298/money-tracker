@@ -171,38 +171,3 @@ a.nav-item{text-decoration:none}
 .cval{font-weight:600;font-size:.88rem;margin-bottom:6px;font-variant-numeric:tabular-nums}
 .clab{margin-top:8px;font-size:.85rem;color:var(--mute);height:20px}
 @media (max-width:600px){.hrow{grid-template-columns:100px 1fr 80px}}
-
-/* ===== filters (Search + report builder) ===== */
-.filters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mute)}
-.filters .wide{grid-column:1/-1}
-.filters input,.filters select{width:100%;color:var(--ink)}
-.panelbox>.actions{margin-top:14px}
-.panelbox>.actions select{max-width:200px}
-
-/* ===== custom reports & charts ===== */
-.tint{color:var(--accent)}
-.rtop{display:flex;justify-content:space-between;align-items:center;margin:22px 0 6px}
-.rtop .sec{margin:0}
-.rhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-.rhead h2{margin:0 0 2px;font-size:1.05rem}
-.racts{display:flex;gap:6px}
-.racts .btn{padding:6px 12px;font-size:.85rem}
-#rdlg{width:min(760px,96vw)}
-.subh{margin:18px 0 8px;font-size:.95rem}
-.preview{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:12px;padding:14px;min-height:80px}
-.plot.scroll{overflow-x:auto}
-.plot.scroll .pcol{flex:1 0 72px}
-.clab{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.piewrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
-.legend{list-style:none;margin:0;padding:0;flex:1;min-width:200px}
-.legend li{display:flex;align-items:center;gap:8px;padding:4px 0}
-.legend .sw{width:12px;height:12px;border-radius:3px;flex:none}
-.legend .lt{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.legend .lv{font-variant-numeric:tabular-nums;color:var(--mute);font-size:.88rem}
-.linewrap svg{width:100%;height:auto;display:block}
-.svgt{fill:var(--mute);font-size:11px}
-.tbl{width:100%;border-collapse:collapse}
-.tbl td{padding:8px 6px;border-bottom:1px solid var(--line)}
-.tbl .num{text-align:right;font-variant-numeric:tabular-nums}
-.tbl .total td{font-weight:700;border-bottom:0}

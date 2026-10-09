@@ -28,7 +28,6 @@ const clean = e => { Object.keys(e).forEach(k => { if (e[k] === '' || e[k] == nu
 function normalize(d) {
   if (!d || !Array.isArray(d.entries)) d = { entries: [] };
   d.version = 3;
-  if (!Array.isArray(d.reports)) d.reports = [];
   d.categories = d.categories || {};
   CONFIG.entryTypes.forEach(t => { if (!d.categories[t.id]) d.categories[t.id] = clone(CONFIG.defaults.categories[t.id] || {}); });
   CONFIG.lists.forEach(l => {
@@ -187,19 +186,11 @@ function initPage(activeId, render) {
 }
 
 // Horizontal bars: items = [{label, value, cls}]
-function hbars(box, items, fmt) {
-  fmt = fmt || money;
+function hbars(box, items) {
   const max = Math.max(...items.map(i => i.value), 1);
   items.forEach(i => {
-    const r = el('div', 'hrow'), t = el('div', 'track ' + (i.cls || 'tint')), f = el('div', 'fill');
+    const r = el('div', 'hrow'), t = el('div', 'track ' + (i.cls || '')), f = el('div', 'fill');
     f.style.width = (i.value / max * 100) + '%'; t.appendChild(f);
-    r.append(el('div', 'hl', i.label), t, el('div', 'hv', fmt(i.value))); box.appendChild(r);
+    r.append(el('div', 'hl', i.label), t, el('div', 'hv', money(i.value))); box.appendChild(r);
   });
-}
-
-// <select> from [{id,label}]
-function fillObjSelect(id, arr, value) {
-  const s = $(id); s.innerHTML = '';
-  arr.forEach(o => { const x = el('option', '', o.label); x.value = o.id; s.appendChild(x); });
-  s.value = value || (arr[0] && arr[0].id) || '';
 }

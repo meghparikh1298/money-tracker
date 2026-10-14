@@ -1,4 +1,4 @@
- const INVESTMENT = 'Investment';   // the expense category treated as an investment
+const INVESTMENT = 'Investment';   // the expense category treated as an investment
 
 // All parameters live here. Nothing else in the code hardcodes lists or options.
 const CONFIG = {
@@ -10,6 +10,13 @@ const CONFIG = {
   pageSize: 20,                                   // transactions shown on the home page
   currency: { symbol: '₹', locale: 'en-IN' },
   defaultType: 'expense',
+
+  // Rules for the add / edit entry form
+  entryRules: {
+    allowFutureDates: false,     // false = the date can't be later than today
+    lockDateOnEdit: true,        // true  = the date can't be changed when editing an entry
+    requireSubcategory: true     // true  = a subcategory must be chosen whenever the category has subcategories
+  },
 
   // Entry types. sign: +1 adds to balance, -1 subtracts. cls: colour class in style.css
   entryTypes: [

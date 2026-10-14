@@ -1,4 +1,6 @@
 let type = CONFIG.defaultType, editing = null, shown = CONFIG.pageSize;
+// Entry-form rules from config.js (safe defaults if config.js is older)
+const rules = () => Object.assign({ allowFutureDates: false, lockDateOnEdit: true, requireSubcategory: true }, CONFIG.entryRules);
 const byNewest = (a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt);
 
 function showLogin() { $('app').hidden = true; $('login').hidden = false; }
@@ -92,7 +94,10 @@ function setType(t, keepCat) {
   fillSub();
 }
 function fillSub(selected) {
-  fillSelect('subcategory', data.categories[type][$('category').value] || [], selected, '— None —');
+  const subs = data.categories[type][$('category').value] || [], need = rules().requireSubcategory && subs.length > 0;
+  fillSelect('subcategory', subs, selected, need ? 'Select subcategory' : '— None —');
+  $('subcategory').required = need;
+  $('wrap_subcategory').firstChild.textContent = need ? 'Subcategory *' : 'Subcategory';
   updateExtras();
 }
 const extraVisible = x => !x.whenCategory || $('category').value.toLowerCase() === x.whenCategory.toLowerCase();
@@ -110,7 +115,10 @@ function openDlg(entry) {
   fillSub(entry && entry.subcategory);
   CONFIG.lists.forEach(l => fillList(l, entry && entry[l.field]));
   CONFIG.extraFields.forEach(x => { if (extraVisible(x)) $(x.field).value = (entry && entry[x.field]) || ''; if (x.suggest) fillDatalist(x.field); });
-  $('date').value = entry ? entry.date : localDate();
+  const d = $('date'), r = rules();
+  d.value = entry ? entry.date : localDate();
+  if (r.allowFutureDates) d.removeAttribute('max'); else d.max = localDate();
+  d.disabled = !!entry && r.lockDateOnEdit;           // date is fixed once an entry exists
   $('amount').value = entry ? entry.amount : '';
   $('note').value = entry ? entry.note || '' : '';
   $('delBtn').hidden = !entry;
@@ -120,7 +128,10 @@ function saveEntry(ev) {
   ev.preventDefault();
   const amount = parseFloat($('amount').value);
   if (!(amount > 0)) return;
-  const f = { date: $('date').value, type, category: $('category').value, subcategory: $('subcategory').value, amount, note: $('note').value.trim() };
+  const r = rules(), dateLocked = !!editing && r.lockDateOnEdit, date = dateLocked ? editing.date : $('date').value;
+  if (!r.allowFutureDates && !dateLocked && date > localDate()) { alert('The date cannot be in the future.'); return; }
+  if ($('subcategory').required && !$('subcategory').value) { alert('Please choose a subcategory.'); return; }
+  const f = { date, type, category: $('category').value, subcategory: $('subcategory').value, amount, note: $('note').value.trim() };
   CONFIG.lists.forEach(l => { f[l.field] = $(l.field).value; });
   CONFIG.extraFields.forEach(x => { f[x.field] = extraVisible(x) ? $(x.field).value.trim() : ''; });
   if (editing) clean(Object.assign(editing, f, { updatedAt: nowIso() }));

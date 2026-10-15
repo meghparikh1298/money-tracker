@@ -28,16 +28,15 @@ const CONFIG = {
   searchPageSize: 50,                 // results shown at a time
   searchDefaultPreset: 0,             // which period shortcut is selected first (index in datePresets; 0 = This month)
   // Period shortcuts. from/to = offsets from the current month (unit: 'year' = offsets from the current year).
-  // Leave out from/to for "All time".
   datePresets: [
     { label: 'This month',    from: 0,  to: 0 },
     { label: 'Last month',    from: -1, to: -1 },
     { label: 'Last 3 months', from: -2, to: 0 },
     { label: 'Last 6 months', from: -5, to: 0 },
     { label: 'This year',     from: 0,  to: 0, unit: 'year' },
-    { label: 'Last year',     from: -1, to: -1, unit: 'year' },
-    { label: 'All time' }
+    { label: 'Last year',     from: -1, to: -1, unit: 'year' }
   ],
+  customRangeLabel: 'Custom range',   // extra last option in the Period dropdown: pick your own From / To (never later than today)
   sortOptions: [                      // ids must stay: newest, oldest, high, low
     { id: 'newest', label: 'Newest first' }, { id: 'oldest', label: 'Oldest first' },
     { id: 'high', label: 'Amount: high to low' }, { id: 'low', label: 'Amount: low to high' }

@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
   s.onchange = () => { sort = s.value; renderResults(); };
   $('resetBtn').onclick = () => {
     Object.keys(f).forEach(k => delete f[k]); defaults();
-    shown = CONFIG.searchPageSize; if (ui) ui.refresh(); renderResults();
+    shown = CONFIG.searchPageSize; if (ui) ui.refresh(true); renderResults();
   };
   $('moreBtn').onclick = () => { shown += CONFIG.searchPageSize; renderResults(); };
   initPage('search', renderSearch);

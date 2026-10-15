@@ -17,15 +17,28 @@ function renderUser() {
 // ---------- Home ----------
 function renderHome() {
   const m = localDate().slice(0, 7), box = $('summary');
-  box.innerHTML = ''; box.style.gridTemplateColumns = `repeat(${CONFIG.entryTypes.length + 1},1fr)`;
-  const card = (label, value, cls) => { const d = el('div'); d.append(el('span', '', label), el('b', cls, value)); box.appendChild(d); };
+  box.innerHTML = ''; box.className = 'summary auto'; box.style.gridTemplateColumns = '';
+  const card = (label, value, cls, sub) => {
+    const d = el('div'); d.append(el('span', '', label), el('b', cls, value));
+    if (sub) d.appendChild(el('small', '', sub)); box.appendChild(d);
+  };
+  const sumOf = rows => rows.reduce((a, e) => a + e.amount, 0);
+  const isInvestment = e => e.category && e.category.toLowerCase() === INVESTMENT.toLowerCase() && typeOf(e.type).sign < 0;
+  const monthRows = data.entries.filter(e => e.date.slice(0, 7) === m);
+  const invested = sumOf(monthRows.filter(isInvestment));
+
+  // Income and Expense cards. Expense leaves out investments (they get their own card).
   let bal = 0;
   CONFIG.entryTypes.forEach(t => {
-    const sum = data.entries.filter(e => e.type === t.id && e.date.slice(0, 7) === m).reduce((a, e) => a + e.amount, 0);
-    bal += t.sign * sum; card(t.label + ' (this month)', money(sum), t.cls);
+    const rows = monthRows.filter(e => e.type === t.id), amount = sumOf(t.sign < 0 ? rows.filter(e => !isInvestment(e)) : rows);
+    bal += t.sign * amount; card(t.label + ' (this month)', money(amount), t.cls);
   });
+  // Balance: Income - Expense, and also minus Investment unless config.js says otherwise
+  if (Object.assign({ balanceIncludesInvestment: true }, CONFIG.summary).balanceIncludesInvestment) bal -= invested;
   const pos = CONFIG.entryTypes.find(t => t.sign > 0), neg = CONFIG.entryTypes.find(t => t.sign < 0);
   card('Balance', (bal < 0 ? '-' : '') + money(Math.abs(bal)), bal < 0 ? neg && neg.cls : pos && pos.cls);
+  // Investment section
+  card(INVESTMENT + ' (this month)', money(invested), 'invc', money(sumOf(data.entries.filter(isInvestment))) + ' invested in total');
 
   const rows = data.entries.slice().sort(byNewest);
   const ul = $('list'); ul.innerHTML = '';

@@ -11,6 +11,12 @@ const CONFIG = {
   currency: { symbol: '₹', locale: 'en-IN' },
   defaultType: 'expense',
 
+  // Home page summary cards
+  summary: {
+    balanceIncludesInvestment: false   // true  = Balance = Income - Expense - Investment (what is really left)
+                                      // false = Balance = Income - Expense (money put into investments is not deducted)
+  },
+
   // Rules for the add / edit entry form
   entryRules: {
     allowFutureDates: false,     // false = the date can't be later than today

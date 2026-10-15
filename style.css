@@ -171,3 +171,19 @@ a.nav-item{text-decoration:none}
 .cval{font-weight:600;font-size:.88rem;margin-bottom:6px;font-variant-numeric:tabular-nums}
 .clab{margin-top:8px;font-size:.85rem;color:var(--mute);height:20px}
 @media (max-width:600px){.hrow{grid-template-columns:100px 1fr 80px}}
+
+/* ===== Search page ===== */
+.period{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 20px;margin-bottom:14px}
+.plabel{font-size:.8rem;color:var(--mute);align-self:center}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{padding:7px 14px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--ink);font:inherit;font-size:.88rem;cursor:pointer}
+.pill:hover{border-color:var(--accent)}
+.pill.on{background:var(--grad);border-color:transparent;color:#fff;font-weight:600}
+.dates{display:flex;gap:10px}
+.dates label,.filters label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--mute)}
+.dates input,.filters input,.filters select{width:100%;color:var(--ink)}
+.filters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.filters .wide{grid-column:1/-1}
+.panelbox>.actions .muted{margin:0}
+.panelbox>.actions select{max-width:190px}
+.summary.auto+.list{margin-top:14px}

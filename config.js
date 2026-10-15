@@ -24,9 +24,29 @@ const CONFIG = {
     { id: 'expense', label: 'Expense', sign: -1, cls: 'exp' }
   ],
 
-  // Left menu (first four pages)
+  // Search page
+  searchPageSize: 50,                 // results shown at a time
+  searchDefaultPreset: 0,             // which period shortcut is selected first (index in datePresets; 0 = This month)
+  // Period shortcuts. from/to = offsets from the current month (unit: 'year' = offsets from the current year).
+  // Leave out from/to for "All time".
+  datePresets: [
+    { label: 'This month',    from: 0,  to: 0 },
+    { label: 'Last month',    from: -1, to: -1 },
+    { label: 'Last 3 months', from: -2, to: 0 },
+    { label: 'Last 6 months', from: -5, to: 0 },
+    { label: 'This year',     from: 0,  to: 0, unit: 'year' },
+    { label: 'Last year',     from: -1, to: -1, unit: 'year' },
+    { label: 'All time' }
+  ],
+  sortOptions: [                      // ids must stay: newest, oldest, high, low
+    { id: 'newest', label: 'Newest first' }, { id: 'oldest', label: 'Oldest first' },
+    { id: 'high', label: 'Amount: high to low' }, { id: 'low', label: 'Amount: low to high' }
+  ],
+
+  // Left menu
   nav: [
     { id: 'transactions', label: 'Transactions', href: 'index.html',       icon: '🧾' },
+    { id: 'search',       label: 'Search',       href: 'search.html',      icon: '🔍' },
     { id: 'investments',  label: 'Investments',  href: 'investments.html', icon: '📈' },
     { id: 'reports',      label: 'Reports',      href: 'reports.html',     icon: '📊' },
     { id: 'settings',     label: 'Settings',     href: 'settings.html',    icon: '⚙️' }
